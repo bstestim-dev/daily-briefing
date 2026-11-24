@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f6f7f9">
+  <title>每日資安與警政輿情晨報</title>
+  <style>
+    :root {
+      --bg: #f6f7f9;
+      --surface: #ffffff;
+      --border: #e3e6ec;
+      --accent: #1d4ed8;
+      --text: #1c2430;
+      --muted: #5c6778;
+      --danger: #dc2626;
+      --radius: 14px;
+    }
+
+    * { box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: "PingFang TC", "Noto Sans TC", "Microsoft JhengHei", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-size: 16px;
+      line-height: 1.65;
+      border-top: 4px solid var(--accent);
+      word-break: keep-all;
+    }
+
+    .container {
+      max-width: 1080px;
+      margin: 0 auto;
+      padding: 28px 20px 48px;
+    }
+
+    header h1 {
+      margin: 0 0 6px;
+      font-size: 1.7rem;
+      line-height: 1.35;
+      font-weight: 700;
+      letter-spacing: 0.01em;
+    }
+
+    .checked {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.875rem;
+    }
+
+    .checked.error {
+      margin-top: 14px;
+      padding: 12px 14px;
+      color: #991b1b;
+      background: #fef2f2;
+      border: 1px solid #fecaca;
+      border-radius: var(--radius);
+    }
+
+    .overview-block {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-top: 18px;
+    }
+
+    .panel {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 18px 20px;
+    }
+
+    .overview-text {
+      margin: 0;
+      font-size: 1.05rem;
+      line-height: 1.75;
+    }
+
+    .metrics {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .metric {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 16px 18px;
+      min-width: 0;
+    }
+
+    .value {
+      font-size: 2.25rem;
+      font-weight: 700;
+      line-height: 1.1;
+      letter-spacing: -0.03em;
+      font-variant-numeric: tabular-nums;
+      color: var(--text);
+    }
+
+    .value.danger { color: var(--danger); }
+
+    .label {
+      margin-top: 6px;
+      font-weight: 700;
+    }
+
+    .detail {
+      margin-top: 2px;
+      color: var(--muted);
+      font-size: 0.8125rem;
+      line-height: 1.5;
+    }
+
+    .callout {
+      border-radius: var(--radius);
+      padding: 12px 16px;
+      border: 1px solid transparent;
+      border-left-width: 4px;
+    }
+
+    .callout strong { margin-right: 0.45em; }
+
+    .callout.warn {
+      background: #fff6db;
+      border-color: #f3e0a4;
+      border-left-color: #d4a017;
+    }
+
+    .callout.info {
+      background: #eef4ff;
+      border-color: #d4e3ff;
+      border-left-color: var(--accent);
+      color: #1e3a8a;
+      margin-bottom: 12px;
+    }
+
+    section { margin-top: 28px; }
+
+    section h2 {
+      margin: 0 0 12px;
+      padding-left: 12px;
+      border-left: 4px solid var(--accent);
+      font-size: 1.15rem;
+      line-height: 1.4;
+      font-weight: 700;
+    }
+
+    .table-wrap {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.94rem;
+    }
+
+    th,
+    td,
+    .overview-text,
+    .callout,
+    .card-title,
+    .field,
+    .label,
+    .detail {
+      overflow-wrap: anywhere;
+    }
+
+    th,
+    td {
+      text-align: left;
+      vertical-align: top;
+      padding: 12px 14px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    table.cyber col.c-level { width: 6.5em; }
+    table.cyber col.c-when { width: 13.5em; }
+    table.drone col.c-when { width: 12em; }
+    table.drone col.c-cat { width: 9em; }
+    table.social col.c-id { width: 6em; }
+    table.social col.c-when { width: 8em; }
+
+    th {
+      background: #f4f6f8;
+      color: #3a4353;
+      font-size: 0.8125rem;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    tbody tr:last-child td { border-bottom: none; }
+
+    tbody tr:hover td { background: #f8fafc; }
+
+    td a { font-weight: 600; }
+
+    a { color: var(--accent); text-decoration: none; }
+
+    a:hover { text-decoration: underline; }
+
+    a:focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 2px;
+      border-radius: 2px;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 2px 10px;
+      border-radius: 999px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      line-height: 1.55;
+      white-space: nowrap;
+    }
+
+    .badge.danger { background: #fee2e2; color: #b91c1c; }
+    .badge.warning { background: #fef3c7; color: #92400e; }
+    .badge.neutral { background: #eef1f4; color: #4b5563; }
+
+    .empty {
+      color: var(--muted);
+      text-align: center;
+    }
+
+    .cards { display: none; }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 14px 14px 12px;
+    }
+
+    .card + .card { margin-top: 12px; }
+
+    .card-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 8px 12px;
+      flex-wrap: wrap;
+    }
+
+    .card-time {
+      color: var(--muted);
+      font-size: 0.8125rem;
+      line-height: 1.7;
+    }
+
+    .card-title {
+      margin: 8px 0 6px;
+      font-size: 1.02rem;
+      font-weight: 700;
+      line-height: 1.45;
+    }
+
+    .card-title a { font-weight: 700; }
+
+    .field {
+      margin: 4px 0 0;
+      font-size: 0.92rem;
+    }
+
+    .field .k { color: var(--muted); }
+
+    .site-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 36px;
+      padding-top: 16px;
+      border-top: 1px solid var(--border);
+      color: var(--muted);
+      font-size: 0.875rem;
+    }
+
+    @media (max-width: 767px) {
+      .container { padding: 18px 14px 36px; }
+
+      header h1 { font-size: 1.28rem; }
+
+      .metrics { grid-template-columns: 1fr; }
+
+      .table-wrap { display: none; }
+
+      .cards { display: block; }
+
+      th, td { padding: 10px 12px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header id="top">
+      <h1 id="page-title">每日資安與警政輿情晨報</h1>
+      <p id="page-meta" class="checked">載入中…</p>
+    </header>
+
+    <main id="app" hidden></main>
+
+    <footer class="site-footer">
+      <span>每日資安與警政輿情晨報</span>
+      <a href="#top">回到頂部 ↑</a>
+    </footer>
+  </div>
+
+  <script>
+    (function () {
+      var API = "https://script.google.com/macros/s/AKfycbymy9gY5jH8cPGqr59DLvntvssbjXX3qwRBuvK-rA2i7Ja8siD5zMFpegdZux9KMlM1Kw/exec?format=json";
+      var titleEl = document.getElementById("page-title");
+      var metaEl = document.getElementById("page-meta");
+      var appEl = document.getElementById("app");
+
+      function esc(value) {
+        return String(value == null ? "" : value)
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/"/g, "&quot;")
+          .replace(/'/g, "&#39;");
+      }
+
+      function safeUrl(url) {
+        var raw = String(url == null ? "" : url).trim();
+        if (!/^https?:\/\/[^\s"'<>\\]+$/i.test(raw)) return "#";
+        return esc(raw);
+      }
+
+      function link(url, text) {
+        return '<a href="' + safeUrl(url) + '" target="_blank" rel="noopener">' + esc(text) + "</a>";
+      }
+
+      function badge(text, tone) {
+        var kind = tone === "danger" || tone === "warning" ? tone : "neutral";
+        return '<span class="badge ' + kind + '">' + esc(text) + "</span>";
+      }
+
+      function asArray(value) {
+        return Array.isArray(value) ? value : [];
+      }
+
+      function emptyRow(cols) {
+        return '<tr><td class="empty" colspan="' + cols + '">本日無資料</td></tr>';
+      }
+
+      function emptyCard() {
+        return '<article class="card"><p class="field empty">本日無資料</p></article>';
+      }
+
+      function renderMetrics(items) {
+        return items.map(function (item) {
+          var danger = item && item.tone === "danger" ? " danger" : "";
+          return '<article class="metric">'
+            + '<div class="value' + danger + '">' + esc(item && item.value) + "</div>"
+            + '<div class="label">' + esc(item && item.label) + "</div>"
+            + '<div class="detail">' + esc(item && item.detail) + "</div>"
+            + "</article>";
+        }).join("");
+      }
+
+      function renderCyber(items) {
+        var table = items.map(function (item) {
+          var tone = item && (item.tone === "danger" || item.tone === "warning") ? item.tone : "neutral";
+          return "<tr>"
+            + "<td>" + badge(item && item.level, tone) + "</td>"
+            + "<td>" + esc(item && item.sourceTime) + "</td>"
+            + "<td>" + link(item && item.url, item && item.title) + "</td>"
+            + "<td>" + esc(item && item.impact) + "</td>"
+            + "<td>" + esc(item && item.action) + "</td>"
+            + "</tr>";
+        }).join("");
+
+        var cards = items.map(function (item) {
+          var tone = item && (item.tone === "danger" || item.tone === "warning") ? item.tone : "neutral";
+          return '<article class="card">'
+            + '<div class="card-top">' + badge(item && item.level, tone)
+            + '<span class="card-time">' + esc(item && item.sourceTime) + "</span></div>"
+            + '<p class="card-title">' + link(item && item.url, item && item.title) + "</p>"
+            + '<p class="field"><span class="k">影響對象：</span>' + esc(item && item.impact) + "</p>"
+            + '<p class="field"><span class="k">建議處置：</span>' + esc(item && item.action) + "</p>"
+            + "</article>";
+        }).join("");
+
+        return { table: table || emptyRow(5), cards: cards || emptyCard() };
+      }
+
+      function renderDrone(items) {
+        var table = items.map(function (item) {
+          return "<tr>"
+            + "<td>" + esc(item && item.sourceTime) + "</td>"
+            + "<td>" + link(item && item.url, item && item.title) + "</td>"
+            + "<td>" + badge(item && item.category, "neutral") + "</td>"
+            + "<td>" + esc(item && item.summary) + "</td>"
+            + "</tr>";
+        }).join("");
+
+        var cards = items.map(function (item) {
+          return '<article class="card">'
+            + '<div class="card-top">' + badge(item && item.category, "neutral")
+            + '<span class="card-time">' + esc(item && item.sourceTime) + "</span></div>"
+            + '<p class="card-title">' + link(item && item.url, item && item.title) + "</p>"
+            + '<p class="field"><span class="k">重點摘要：</span>' + esc(item && item.summary) + "</p>"
+            + "</article>";
+        }).join("");
+
+        return { table: table || emptyRow(4), cards: cards || emptyCard() };
+      }
+
+      function renderFacebook(items) {
+        var table = items.map(function (item) {
+          return "<tr>"
+            + "<td>" + link(item && item.url, item && item.id) + "</td>"
+            + "<td>" + esc(item && item.time) + "</td>"
+            + "<td>" + esc(item && item.unit) + "</td>"
+            + "<td>" + esc(item && item.summary) + "</td>"
+            + "</tr>";
+        }).join("");
+
+        var cards = items.map(function (item) {
+          return '<article class="card">'
+            + '<div class="card-top"><span class="card-time">' + esc(item && item.time) + "</span></div>"
+            + '<p class="card-title">' + link(item && item.url, item && item.id) + "</p>"
+            + '<p class="field"><span class="k">單位／類別：</span>' + esc(item && item.unit) + "</p>"
+            + '<p class="field"><span class="k">重點摘錄：</span>' + esc(item && item.summary) + "</p>"
+            + "</article>";
+        }).join("");
+
+        return { table: table || emptyRow(4), cards: cards || emptyCard() };
+      }
+
+      function buildPage(data) {
+        var metrics = asArray(data.metrics);
+        var cyber = renderCyber(asArray(data.cyber));
+        var drone = renderDrone(asArray(data.drone));
+        var facebook = renderFacebook(asArray(data.facebook));
+        var notice = String(data.facebookNotice == null ? "" : data.facebookNotice).trim();
+        var noticeHtml = notice
+          ? '<div class="callout info"><strong>今日狀態</strong>' + esc(notice) + "</div>"
+          : "";
+
+        return ''
+          + '<div class="overview-block">'
+          + '<div class="panel"><p class="overview-text">' + esc(data.overview) + "</p></div>"
+          + '<div class="metrics">' + renderMetrics(metrics) + "</div>"
+          + '<div class="callout warn"><strong>今日優先處置</strong>' + esc(data.priorityAction) + "</div>"
+          + "</div>"
+          + "<section>"
+          + "<h2>一、高風險與國內公務機關資安警訊</h2>"
+          + '<div class="table-wrap"><table class="cyber"><colgroup>'
+          + '<col class="c-level"><col class="c-when"><col><col><col>'
+          + '</colgroup><thead><tr>'
+          + '<th scope="col">等級</th><th scope="col">來源與時間</th><th scope="col">標題／編號</th>'
+          + '<th scope="col">影響對象</th><th scope="col">建議處置</th>'
+          + "</tr></thead><tbody>" + cyber.table + "</tbody></table></div>"
+          + '<div class="cards">' + cyber.cards + "</div>"
+          + "</section>"
+          + "<section>"
+          + "<h2>二、無人機資安與國安相關新聞</h2>"
+          + '<div class="table-wrap"><table class="drone"><colgroup>'
+          + '<col class="c-when"><col><col class="c-cat"><col>'
+          + '</colgroup><thead><tr>'
+          + '<th scope="col">來源與時間</th><th scope="col">標題</th><th scope="col">面向</th><th scope="col">重點摘要</th>'
+          + "</tr></thead><tbody>" + drone.table + "</tbody></table></div>"
+          + '<div class="cards">' + drone.cards + "</div>"
+          + "</section>"
+          + "<section>"
+          + "<h2>三、社群輿情：靠北警察 3.0</h2>"
+          + noticeHtml
+          + '<div class="table-wrap"><table class="social"><colgroup>'
+          + '<col class="c-id"><col class="c-when"><col><col>'
+          + '</colgroup><thead><tr>'
+          + '<th scope="col">編號</th><th scope="col">時間</th><th scope="col">單位／類別</th><th scope="col">重點摘錄</th>'
+          + "</tr></thead><tbody>" + facebook.table + "</tbody></table></div>"
+          + '<div class="cards">' + facebook.cards + "</div>"
+          + "</section>";
+      }
+
+      function showError() {
+        metaEl.textContent = "資料載入失敗，請稍後重新整理頁面。";
+        metaEl.className = "checked error";
+        appEl.hidden = true;
+        appEl.innerHTML = "";
+      }
+
+      fetch(API + "&t=" + Date.now(), { cache: "no-store" })
+        .then(function (res) {
+          if (!res.ok) throw new Error(String(res.status));
+          return res.json();
+        })
+        .then(function (data) {
+          if (!data || typeof data !== "object" || Array.isArray(data)) throw new Error("invalid");
+          var heading = "每日資安與警政輿情晨報 — " + String(data.date == null ? "" : data.date);
+          titleEl.textContent = heading;
+          document.title = heading;
+          metaEl.className = "checked";
+          metaEl.textContent = "查核時間：" + String(data.checkedAt == null ? "" : data.checkedAt);
+          appEl.innerHTML = buildPage(data);
+          appEl.hidden = false;
+        })
+        .catch(function () {
+          showError();
+        });
+    })();
+  </script>
+</body>
+</html>
