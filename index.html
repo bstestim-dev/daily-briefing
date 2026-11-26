@@ -69,85 +69,32 @@
       border-radius: 2px;
     }
 
-    p, li, h3, .k, .detail, .label, .callout { overflow-wrap: anywhere; }
+    p, li, h3, .k, .callout { overflow-wrap: anywhere; }
 
     /* summary */
     .summary {
-      margin-top: 14px;
+      margin-top: 20px;
       background: var(--surface);
       border: 1px solid var(--border);
       border-radius: var(--radius);
-      padding: 12px 16px;
+      padding: 16px 18px;
     }
 
-    .summary h2 { margin: 0 0 4px; font-size: 0.95rem; color: var(--muted); }
+    .summary h2 { margin: 0 0 8px; font-size: 0.95rem; color: var(--muted); }
     .summary ul { margin: 0; padding-left: 1.2em; }
-    .summary li { margin: 3px 0; font-size: 0.95rem; line-height: 1.6; }
+    .summary li { margin: 7px 0; font-size: 0.95rem; line-height: 1.7; }
     .summary li::marker { color: var(--accent); }
-
-    /* stat row */
-    .metrics {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 8px;
-      margin-top: 12px;
-    }
-
-    .metric {
-      display: block;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 10px 4px;
-      text-align: center;
-      min-width: 0;
-      color: inherit;
-      text-decoration: none;
-      transition: border-color 0.15s ease, box-shadow 0.15s ease;
-    }
-
-    a.metric:hover,
-    a.metric:focus-visible {
-      text-decoration: none;
-      border-color: var(--accent);
-      box-shadow: 0 4px 14px rgba(29, 78, 216, 0.12);
-    }
-
-    .value {
-      font-size: 1.9rem;
-      font-weight: 700;
-      line-height: 1.1;
-      letter-spacing: -0.03em;
-      font-variant-numeric: tabular-nums;
-    }
-
-    .value.danger { color: var(--danger); }
-
-    .label {
-      margin-top: 4px;
-      font-weight: 700;
-      font-size: 0.74rem;
-      line-height: 1.35;
-      text-wrap: balance;
-    }
-
-    .detail {
-      display: none;
-      margin-top: 4px;
-      color: var(--muted);
-      font-size: 0.8rem;
-      line-height: 1.45;
-    }
 
     /* table of contents */
     .toc {
       position: sticky;
       top: 0;
       z-index: 10;
-      margin: 12px -14px 0;
-      padding: 8px 14px;
+      margin: 28px -14px 0;
+      padding: 10px 14px;
       background: rgba(246, 247, 249, 0.96);
       backdrop-filter: blur(6px);
+      border-top: 2px solid var(--border);
       border-bottom: 1px solid var(--border);
       display: flex;
       gap: 8px;
@@ -272,14 +219,9 @@
     @media (min-width: 768px) {
       .container { padding: 28px 20px 48px; }
       header h1 { font-size: 1.7rem; }
-      .summary { padding: 16px 22px; }
-      .summary li { font-size: 1rem; }
-      .metrics { gap: 12px; }
-      .metric { padding: 14px 16px; text-align: left; }
-      .value { font-size: 2.25rem; }
-      .label { font-size: 0.95rem; }
-      .detail { display: block; }
-      .toc { margin: 14px 0 0; padding: 10px 0; background: var(--bg); }
+      .summary { margin-top: 24px; padding: 20px 26px; }
+      .summary li { font-size: 1rem; margin: 8px 0; }
+      .toc { margin: 32px 0 0; padding: 12px 0; background: var(--bg); }
       .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; align-items: start; }
       .card.wide { grid-column: 1 / -1; }
       section h2 { font-size: 1.15rem; }
@@ -406,23 +348,6 @@
           + "</ul></div>";
       }
 
-      function renderMetrics(items) {
-        if (!items.length) return "";
-        var targets = ["#cyber", "#drone", "#facebook"];
-        return '<div class="metrics">' + items.map(function (item, index) {
-          var danger = item && item.tone === "danger" ? " danger" : "";
-          var href = targets[index];
-          var open = href ? '<a class="metric" href="' + href + '">' : '<div class="metric">';
-          var close = href ? "</a>" : "</div>";
-          var detail = item && has(item.detail) ? '<div class="detail">' + esc(item.detail) + "</div>" : "";
-          return open
-            + '<div class="value' + danger + '">' + esc(item && item.value) + "</div>"
-            + '<div class="label">' + esc(item && item.label).replace(/／/g, "／<wbr>") + "</div>"
-            + detail
-            + close;
-        }).join("") + "</div>";
-      }
-
       function renderToc() {
         return '<nav class="toc" aria-label="目錄">'
           + '<a href="#cyber">一、資安警訊</a>'
@@ -479,7 +404,6 @@
 
         return ""
           + renderSummary(data.overview)
-          + renderMetrics(asArray(data.metrics))
           + renderToc()
           + '<section id="cyber">'
           + "<h2>一、高風險與國內公務機關資安警訊</h2>"
