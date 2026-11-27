@@ -385,12 +385,13 @@
 
       function renderFacebook(items) {
         return grid(items.map(function (item, index) {
-          var heading = has(item && item.id) ? item.id : "貼文";
-          return '<article class="card neutral' + wide(index, items.length) + '">'
+          var heading = has(item && item.summary) ? item.summary : (has(item && item.id) ? item.id : "貼文");
+          var meta = [item && item.id, item && item.time].filter(has).join("｜");
+          var tone = (item && item.unit && String(item.unit).indexOf("本局") !== -1) ? "warning" : "neutral";
+          return '<article class="card ' + tone + wide(index, items.length) + '">'
+            + badge(item && item.unit, tone)
             + title(item, heading)
-            + source(item && item.time)
-            + field("單位／類別", item && item.unit)
-            + field("重點摘錄", item && item.summary)
+            + source(meta)
             + "</article>";
         }).join(""));
       }
